@@ -4,15 +4,20 @@ require_once('CollectionArray.class.php');
 
 class Queue extends CollectionArray
 {
+	public function __construct($array = null)
+	{
+		parent::__construct($array);
+	}
+	
 	public function add($elementKey, $elementValue = null)
 	{
-		return self::push($elementKey);
+		return parent::add($element);
 	}
 
 	public function peek()
 	{
 		return parent::size() != 0
-			? $this->elements[0]
+			? $this[0]
 			: null;
 	}
 
@@ -27,13 +32,13 @@ class Queue extends CollectionArray
 	public function pos($element)
 	{
 		return parent::contains($element) 
-			? @array_search($element, @array_values($this->elements), true) + 1
+			? @array_search($element, @array_values(self::toArray()), true) + 1
 			: false;
 	}
 
 	public function push($element)
 	{
-		return parent::add($element);
+		return self::add($elementKey);
 	}
 }
 

@@ -4,15 +4,20 @@ require_once('CollectionArray.class.php');
 
 class Stack extends CollectionArray
 {
+	public function __construct($array = null)
+	{
+		parent::__construct($array);
+	}
+
 	public function add($elementKey, $elementValue = null)
 	{
-		return self::push($elementKey);
+		parent::add($element);
 	}
 
 	public function peek()
 	{
 		return parent::size() != 0
-			? $this->elements[parent::size()-1]
+			? $this[parent::size()-1]
 			: null;
 	}
 
@@ -27,13 +32,13 @@ class Stack extends CollectionArray
 	public function pos($element)
 	{
 		return parent::contains($element) 
-			? @array_search($element, @array_reverse($this->elements, false), true) + 1
+			? @array_search($element, @array_reverse(self::toArray(), false), true) + 1
 			: false;
 	}
 
 	public function push($element)
 	{
-		return parent::add($element);
+		return self::add($elementKey);
 	}
 }
 

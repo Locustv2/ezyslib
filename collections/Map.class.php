@@ -4,25 +4,16 @@ require_once('CollectionArray.class.php');
 
 class Map extends CollectionArray
 {
-	public function __construct($array = null)
+	public function __construct($elements = null)
 	{
-		parent::__construct($array);
+		parent::__construct($elements, true);
 	}
 
 	public function add($elementKey, $elementValue = null)
 	{
-		return self::put($elementKey, $elementValue);
-	}
-
-	public function addAll(Collection $collection)
-	{
-		$changed = false;
-		foreach ($collection->toArray() as $key => $element)
-		{
-			if($this->add($key, $element))
-				$changed = true;
-		}
-		return $changed;
+		return (isset($elementKey) and isset($elementValue))
+			?  parent::add($elementKey, $elementValue)
+			: false;
 	}
 
 	public function containsKey($key)
@@ -40,16 +31,6 @@ class Map extends CollectionArray
 		return parent::get($key);
 	}
 
-	public function put($key, $value)
-	{
-		return parent::add($key, $value);
-	}
-
-	public function putAll(Collection $collection)
-	{
-		return parent::addAll($collection);
-	}
-
 	public function remove($key)
 	{
 		return parent::removeIndex($key);
@@ -59,9 +40,9 @@ class Map extends CollectionArray
 	public function __tostring()
     {
         $string = @get_class($this) . "[" . self::size() . "] { ";
-        foreach ($this->elements as $elementKey => $elementValue)
+        foreach (self::toArray() as $elementKey => $elementValue)
         {
-        	$index = @array_search($elementKey, @array_keys($this->elements));
+        	$index = @array_search($elementKey, @array_keys(self::toArray()));
             $string .= "$elementKey => $elementValue";
             if($index < self::size()-1)
                 $string .= ', ';
@@ -69,11 +50,6 @@ class Map extends CollectionArray
         $string .= " }";
         return $string;
     }
-
-    public function key()
-    {
-        //var_dump(__METHOD__);
-        return @array_search(self::current(), $this->elements);
-    }
+    
 }
 ?>

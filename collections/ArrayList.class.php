@@ -27,7 +27,7 @@ class ArrayList extends CollectionArray
 	public function lastIndexOf($element)
 	{
 		return parent::contains($element) 
-			? @array_search($element, @array_reverse($this->elements, true), true)
+			? @array_search($element, @array_reverse(self::toArray(), true), true)
 			: false;
 	}
 

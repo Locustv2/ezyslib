@@ -2,25 +2,20 @@
 
 require_once('Collection.interface.php');
 
-abstract class CollectionArray implements Collection, Iterator
+abstract class CollectionArray extends ArrayObject implements Collection
 {
-	protected $elements;
-	protected $position;
+	private $isIndexed = false;
 
-	public function __construct($array = null)
+	public function __construct($elements = null, $isIndexed = false)
 	{
-		$this->elements = array();
-		$this->position = 0;
-		if(isset($array) && is_array($array))
+		$this->isIndexed = $isIndexed;
+		if(isset($elements) && is_array($elements))
 		{
-			foreach ($array as $element)
-			{
-				static::add($element);
-			}
+			self::addEach($elements);
 		}
-		else if($array instanceof Collection)
+		else if($elements instanceof Collection)
 		{
-			static::addAll($array);
+			self::addAll($elements);
 		}
 	}
 
@@ -28,41 +23,39 @@ abstract class CollectionArray implements Collection, Iterator
 	{
 		return isset($elementKey)
 			? isset($elementValue)
-				? $this->elements[$elementKey] = $elementValue and true
-				: $this->elements[] = $elementKey and true
+				? $this[$elementKey] = $elementValue and true
+				: $this[] = $elementKey and true
 			: false;
 	}
 
 	public function addAll(Collection $collection)
 	{
-		$changed = false;
-		foreach ($collection->toArray() as $element)
-		{
-			if(static::add($element))
-				$changed = true;
-		}
-		return $changed;
+		return self::addEach($collection->toArray());
 	}
 
 	public function addEach(array $array)
 	{
 		$changed = false;
-		foreach ($array as $element)
+		foreach ($array as $key => $element)
 		{
-			if(static::add($element))
-				$changed = true;
+			$changed = ($this->isIndexed)
+				? static::add($key, $element)
+				: static::add($element);
 		}
 		return $changed;
 	}
 
 	public function clear()
 	{
-		$this->elements = array();
+		foreach (self::toArray() as $key => $element)
+		{
+			unset($this[$key]);
+		}
 	}
 
 	public function contains($element)
 	{
-		return @in_array($element, $this->elements, true)
+		return @in_array($element, self::toArray(), true)
 			? true 
 			: false;
 	}
@@ -79,7 +72,7 @@ abstract class CollectionArray implements Collection, Iterator
 
 	protected function containsIndex($index)
 	{
-		return @array_key_exists($index, $this->elements)
+		return @array_key_exists($index, self::toArray())
 			? true
 			: false;
 	}
@@ -94,15 +87,15 @@ abstract class CollectionArray implements Collection, Iterator
 
 	protected function get($index)
 	{
-		return isset($this->elements[$index])
-			? $this->elements[$index]
+		return isset($this[$index])
+			? $this[$index]
 			: null;
 	}
 
 	protected function indexOf($element)
 	{
 		return self::contains($element) 
-			? @array_search($element, $this->elements, true)
+			? @array_search($element, self::toArray(), true)
 			: false;
 	}
 
@@ -147,7 +140,7 @@ abstract class CollectionArray implements Collection, Iterator
 	{
 		if(self::containsIndex($index))
         {
-        	unset($this->elements[$index]);
+        	unset($this[$index]);
         	return true;
         }
         return false;
@@ -156,7 +149,7 @@ abstract class CollectionArray implements Collection, Iterator
 	public function retainAll(Collection $collection)
 	{
 		$changed = false;
-		foreach ($this->elements as $element)
+		foreach (self::toArray() as $element)
 		{
 			if(!$collection->contains($element))
 			{
@@ -170,62 +163,29 @@ abstract class CollectionArray implements Collection, Iterator
 	protected function set($index, $element)
 	{
 		$value = self::get($index);
-		return isset($value)
-			? !($this->elements[$index] = $element)
-				?: $value
+		return ($this[$index] = $element)
+			? isset($value)
+				? $value
+				: null
 			: false;
 	}
 
 	public function size()
 	{
-		return count($this->elements);
+		return count($this);
 	}
 
 	public function toArray()
 	{
-		return $this->elements;
+		return self::getArrayCopy();
 	}
 
 	public function __tostring()
 	{
 		$string = @get_class($this) . "[" . self::size() . "] { ";
-		$string .= implode(', ', $this->elements);
+		$string .= implode(', ', self::toArray());
 		$string .= " }";
 		return $string;
-	}
-
-
-	// Iterator Methods
-	public function rewind()
-	{
-		//var_dump(__METHOD__);
-		$this->position = 0;
-	}
-
-	public function current()
-	{
-		//var_dump(__METHOD__);
-		$collection = array_values($this->elements);
-		return $collection[$this->position];
-	}
-
-	public function key()
-	{
-		//var_dump(__METHOD__);
-		return $this->position;
-	}
-
-	public function next()
-	{
-		//var_dump(__METHOD__);
-		++$this->position;
-	}
-
-	public function valid()
-	{
-		//var_dump(__METHOD__);
-		$collection = array_values($this->elements);
-		return isset($collection[$this->position]);
 	}
 
 }
