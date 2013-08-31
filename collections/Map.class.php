@@ -14,6 +14,17 @@ class Map extends CollectionArray
 		return self::put($elementKey, $elementValue);
 	}
 
+	public function addAll(Collection $collection)
+	{
+		$changed = false;
+		foreach ($collection->toArray() as $key => $element)
+		{
+			if($this->add($key, $element))
+				$changed = true;
+		}
+		return $changed;
+	}
+
 	public function containsKey($key)
 	{
 		return parent::containsIndex($key);

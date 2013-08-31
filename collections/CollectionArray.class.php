@@ -15,12 +15,12 @@ abstract class CollectionArray implements Collection, Iterator
 		{
 			foreach ($array as $element)
 			{
-				$this->add($element);
+				static::add($element);
 			}
 		}
 		else if($array instanceof Collection)
 		{
-			self::addAll($array);
+			static::addAll($array);
 		}
 	}
 
@@ -36,9 +36,20 @@ abstract class CollectionArray implements Collection, Iterator
 	public function addAll(Collection $collection)
 	{
 		$changed = false;
-		foreach ($collection->toArray() as $key => $element)
+		foreach ($collection->toArray() as $element)
 		{
-			if($this->add($key, $element))
+			if(static::add($element))
+				$changed = true;
+		}
+		return $changed;
+	}
+
+	public function addEach(array $array)
+	{
+		$changed = false;
+		foreach ($array as $element)
+		{
+			if(static::add($element))
 				$changed = true;
 		}
 		return $changed;
@@ -121,6 +132,17 @@ abstract class CollectionArray implements Collection, Iterator
 		return $changed;
 	}
 
+	public function removeEach(array $array)
+	{
+		$changed = false;
+		foreach ($array as $element)
+		{
+			if(self::remove($element))
+				$changed = true;
+		}
+		return $changed;
+	}
+
 	protected function removeIndex($index)
 	{
 		if(self::containsIndex($index))
@@ -183,8 +205,8 @@ abstract class CollectionArray implements Collection, Iterator
 	public function current()
 	{
 		//var_dump(__METHOD__);
-		$test = array_values($this->elements);
-		return $test[$this->position];
+		$collection = array_values($this->elements);
+		return $collection[$this->position];
 	}
 
 	public function key()
@@ -202,8 +224,8 @@ abstract class CollectionArray implements Collection, Iterator
 	public function valid()
 	{
 		//var_dump(__METHOD__);
-		$test = array_values($this->elements);
-		return isset($test[$this->position]);
+		$collection = array_values($this->elements);
+		return isset($collection[$this->position]);
 	}
 
 }
