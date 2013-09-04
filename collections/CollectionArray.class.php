@@ -140,7 +140,10 @@ abstract class CollectionArray extends ArrayObject implements Collection
 	{
 		if(self::containsIndex($index))
         {
-        	unset($this[$index]);
+        	$arr = self::toArray();
+        	unset($arr[$index]);
+        	$arr = array_merge($arr);
+        	$this->exchangeArray($arr);
         	return true;
         }
         return false;

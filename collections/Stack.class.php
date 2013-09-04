@@ -11,7 +11,7 @@ class Stack extends CollectionArray
 
 	public function add($elementKey, $elementValue = null)
 	{
-		parent::add($element);
+		parent::add($elementKey);
 	}
 
 	public function peek()
@@ -38,7 +38,7 @@ class Stack extends CollectionArray
 
 	public function push($element)
 	{
-		return self::add($elementKey);
+		return self::add($element);
 	}
 }
 
