@@ -2,71 +2,90 @@
 
 class HTMLBuilder
 {
-	public static function parse(HTMLElement $element)
+	public static function getElementHTML(HTMLElement $element)
 	{		
 		$html = new DOMDocument();
-		/*
-		$elem = $html->createElement($element::TAG, is_string($element->innerHTML()) ? $element->innerHTML() : null);
+		$elemStack = self::getNestedElemStack($html, $element);
 
-		$element->accessKey and $elem->setAttribute('accesskey', $element->accessKey);
-
-		(count($element->htmlclass) > 0) and $elem->setAttribute('class', HTMLBuilder::parseClass($element->htmlclass));
-
-		$element->hidden and $elem->setAttribute('hidden', $element->hidden);
-
-		$element->id and $elem->setAttribute('id', $element->id);
-
-		(count($element->style) > 0) and $elem->setAttribute('style', HTMLBuilder::parseStyle($element->style));
-
-		$element->title and $elem->setAttribute('title', $element->title);
+		$elem = $elemStack->pop();
+		
+		while(true)
+		{
+			if($elemStack->isEmpty())
+				break;
+			$elem2 = $elemStack->pop();
+			$elem2->appendChild($elem);
+			$elem = $elem2;
+		}
 
 		$html->appendChild($elem);
-*/
-		$test = HTMLBuilder::createElement($html, $element);
-
-		if($element->innerHTML !== null and $element->innerHTML instanceof HTMLElement)
-		{
-			$nested = HTMLBuilder::createElement($html, $element->innerHTML);
-			$test->appendChild($nested);
-		}
-		$html->appendChild($test);
 
 		return $html->saveHTML();
 	}
 
-
-	private static function createElement(DOMDocument &$dom, HTMLElement $element)
+	private function getNestedElemStack(DOMDocument $doc, HTMLElement $element)
 	{
-		$elem = $dom->createElement($element::TAG, is_string($element->innerHTML()) ? $element->innerHTML() : null);
+		$stack = new Stack();
 
-		$element->accessKey and $elem->setAttribute('accesskey', $element->accessKey);
+		$stack->add(self::parseHTMLElement($doc,$element));
 
-		(count($element->htmlclass) > 0) and $elem->setAttribute('class', HTMLBuilder::parseClass($element->htmlclass));
-
-		$element->hidden and $elem->setAttribute('hidden', $element->hidden);
-
-		$element->id and $elem->setAttribute('id', $element->id);
-
-		(count($element->style) > 0) and $elem->setAttribute('style', HTMLBuilder::parseStyle($element->style));
-
-		$element->title and $elem->setAttribute('title', $element->title);
-
-		return $elem;
+		while(true)
+		{
+			if($element->innerHTML!== null and $element->innerHTML instanceof HTMLElement)
+			{
+				$element = $element->innerHTML;
+				$stack->add(self::parseHTMLElement($doc, $element));
+			}
+			else
+				break;
+		}
+		return $stack;
 	}
 
-	private static function parseClass(Set $class)
+	private function parseHTMLElement(DOMDocument $doc, HTMLElement $element)
+	{
+		$node = $doc->createElement($element::TAG, is_string($element->innerHTML()) ? $element->innerHTML() : null);
+
+		$node->setAttribute('style', self::parseStyle($element->style));
+
+		$element->accessKey and $node->setAttribute('accesskey', $element->accessKey);
+
+		(count($element->htmlclass) > 0) and $node->setAttribute('class', self::parseClass($element->htmlclass));
+
+		$element->hidden and $node->setAttribute('hidden', $element->hidden);
+
+		$element->id and $node->setAttribute('id', $element->id);
+
+		$element->addAttr and self::parseAdditionalAttributes($node, $element->addAttr);
+
+		(count($element->style) > 0) and $node->setAttribute('style', self::parseStyle($element->style));
+
+		$element->title and $node->setAttribute('title', $element->title);
+
+		return $node;
+	}
+
+	private function parseClass(Set $class)
 	{
 		return implode(" ", $class->toArray());
 	}
 
-	private static function parseStyle(Map $style)
+	private function parseStyle(Map $styles)
 	{
 		$html = '';
-		foreach ($style as $key => $value)
+		foreach ($styles as $key => $value)
 		{
 			$html .= "$key: $value; ";
 		}
 		return $html;
+	}
+
+	private function parseAdditionalAttributes(DOMElement &$element, Map $attributes)
+	{
+		foreach ($attributes as $key => $value)
+		{
+			$element->setAttribute($key, $value);
+		}
 	}
 }
 

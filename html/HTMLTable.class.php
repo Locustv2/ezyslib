@@ -1,5 +1,21 @@
 <?php
 
+
+
+class HTMLTable extends HTMLElement
+{
+	const TAG = "table";
+
+	public static function element()
+	{
+		return parent::init();
+	}
+
+	
+
+}
+
+/*
 class HTMLTable
 {
 	private $element;
@@ -89,6 +105,6 @@ class HTMLTable
 		echo "$this->html";
 	}
 
-}
+}*/
 
 ?>

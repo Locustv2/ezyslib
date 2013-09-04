@@ -8,6 +8,7 @@ abstract class HTMLElement
 	private $id;
 	private $style;
 	private $title;
+	private $addAttr;
 	private $innerHTML;
 
 	private function __construct()
@@ -18,6 +19,7 @@ abstract class HTMLElement
 		$this->id = null;
 		$this->style = new Map();
 		$this->title = null;
+		$this->addAttr = new Map();
 		$this->innerHTML = null;
 	}
 
@@ -61,7 +63,7 @@ abstract class HTMLElement
 	public function id($id = null)
 	{
 		if(isset($id))
-			$this->id = $id;
+			$this->id = str_replace(' ','',$id);
 		else
 			return $this->id;
 		return $this;
@@ -85,6 +87,15 @@ abstract class HTMLElement
 		return $this;
 	}
 
+	public function addAttr(array $attr = null)
+	{
+		if(isset($attr))
+			$this->addAttr->addEach($attr);
+		else
+			return $this->style;
+		return $this;
+	}
+
 	public function innerHTML($html = null)
 	{
 		if(isset($html))
@@ -96,7 +107,7 @@ abstract class HTMLElement
 
 	public function __tostring()
 	{
-		return HTMLBuilder::parse($this);
+		return HTMLBuilder::getElementHTML($this);
 	}
 
 }
