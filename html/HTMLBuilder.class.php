@@ -2,7 +2,56 @@
 
 class HTMLBuilder
 {
+
+	public static function beta(HTMLElement $element)
+	{
+		$html = new DOMDocument();
+
+		$node = $html->createElement($element::TAG, is_string($element->innerTEXT()) ? $element->innerTEXT() : null);
+		$node->setAttribute('style', self::parseStyle($element->style));
+		$element->accessKey and $node->setAttribute('accesskey', $element->accessKey);
+		(count($element->htmlclass) > 0) and $node->setAttribute('class', self::parseClass($element->htmlclass));
+		$element->hidden and $node->setAttribute('hidden', $element->hidden);
+		$element->id and $node->setAttribute('id', $element->id);
+		$element->addAttr and self::parseAdditionalAttributes($node, $element->addAttr);
+		(count($element->style) > 0) and $node->setAttribute('style', self::parseStyle($element->style));
+		$element->title and $node->setAttribute('title', $element->title);
+
+		foreach ($element->innerHTML as $innerElem)
+		{
+			$node->appendChild($innerElem->toNode($html));
+		}
+
+		$html->appendChild($node);
+		return $html->saveHTML();
+	}
+
 	public static function getElementHTML(HTMLElement $element)
+	{
+		$html = new DOMDocument();
+		$a = $html->appendChild(self::parseHTMLElement($html, $element));
+
+		foreach ($element->innerHTML as $elem) 
+		{
+			$elemStack = self::getNestedElemStack($a, $element);
+
+			$elem = $elemStack->pop();
+			
+			while(true)
+			{
+				if($elemStack->isEmpty())
+					break;
+				$elem2 = $elemStack->pop();
+				$elem2->appendChild($elem);
+				$elem = $elem2;
+			}
+		}
+		$a->appendChild($elem);
+
+		return $html->saveHTML();
+	}
+
+	public static function getElementHTMLx(HTMLElement $element)
 	{		
 		$html = new DOMDocument();
 		$elemStack = self::getNestedElemStack($html, $element);
@@ -23,7 +72,7 @@ class HTMLBuilder
 		return $html->saveHTML();
 	}
 
-	private function getNestedElemStack(DOMDocument $doc, HTMLElement $element)
+	public function getNestedElemStack($doc, HTMLElement $element)
 	{
 		$stack = new Stack();
 
@@ -42,11 +91,9 @@ class HTMLBuilder
 		return $stack;
 	}
 
-	private function parseHTMLElement(DOMDocument $doc, HTMLElement $element)
+	public function parseHTMLElement($doc, HTMLElement $element)
 	{
-		$node = $doc->createElement($element::TAG, is_string($element->innerHTML()) ? $element->innerHTML() : null);
-
-		$node->setAttribute('style', self::parseStyle($element->style));
+		$node = $doc->createElement($element::TAG, is_string($element->innerTEXT()) ? $element->innerTEXT() : null);
 
 		$element->accessKey and $node->setAttribute('accesskey', $element->accessKey);
 
@@ -65,12 +112,12 @@ class HTMLBuilder
 		return $node;
 	}
 
-	private function parseClass(Set $class)
+	public function parseClass(Set $class)
 	{
 		return implode(" ", $class->toArray());
 	}
 
-	private function parseStyle(Map $styles)
+	public function parseStyle(Map $styles)
 	{
 		$html = '';
 		foreach ($styles as $key => $value)
@@ -80,7 +127,7 @@ class HTMLBuilder
 		return $html;
 	}
 
-	private function parseAdditionalAttributes(DOMElement &$element, Map $attributes)
+	public function parseAdditionalAttributes(DOMElement &$element, Map $attributes)
 	{
 		foreach ($attributes as $key => $value)
 		{
@@ -88,5 +135,4 @@ class HTMLBuilder
 		}
 	}
 }
-
 ?>

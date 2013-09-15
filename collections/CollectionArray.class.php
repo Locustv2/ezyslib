@@ -55,7 +55,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	public function contains($element)
 	{
-		return @in_array($element, self::toArray(), true)
+		return @in_array(serialize($element), self::toSerializedArray(), true)
 			? true 
 			: false;
 	}
@@ -181,6 +181,18 @@ abstract class CollectionArray extends ArrayObject implements Collection
 	public function toArray()
 	{
 		return self::getArrayCopy();
+	}
+
+	protected function toSerializedArray()
+	{
+		$array = array();
+
+		foreach (self::getArrayCopy() as $value)
+		{
+			$array[] = serialize($value);
+		}
+
+		return $array;
 	}
 
 	public function __tostring()

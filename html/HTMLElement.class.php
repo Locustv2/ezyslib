@@ -10,6 +10,7 @@ abstract class HTMLElement
 	private $title;
 	private $addAttr;
 	private $innerHTML;
+	private $innerTEXT;
 
 	private function __construct()
 	{
@@ -20,7 +21,8 @@ abstract class HTMLElement
 		$this->style = new Map();
 		$this->title = null;
 		$this->addAttr = new Map();
-		$this->innerHTML = null;
+		$this->innerHTML = new ArrayList();
+		$this->innerTEXT = null;
 	}
 
 	public static function init()
@@ -99,15 +101,52 @@ abstract class HTMLElement
 	public function innerHTML($html = null)
 	{
 		if(isset($html))
-			$this->innerHTML = $html;
+			if(is_array($html))
+				$this->innerHTML->addEach($html);
+			else
+				$this->innerHTML->add($html);
 		else
 			return $this->innerHTML;
 		return $this;
 	}
 
+	public function innerTEXT($text = null)
+	{
+		if(isset($text))
+			$this->innerTEXT = $text;
+		else
+			return $this->innerTEXT;
+		return $this;
+	}
+
+	public function toNode($html)
+	{
+		$node = $html->createElement($this::TAG, is_string($this->innerTEXT()) ? $this->innerTEXT() : null);
+		$this->accessKey and $node->setAttribute('accesskey', $this->accessKey);
+		(count($this->htmlclass) > 0) and $node->setAttribute('class', HTMLBuilder::parseClass($this->htmlclass));
+		$this->hidden and $node->setAttribute('hidden', $this->hidden);
+		$this->id and $node->setAttribute('id', $this->id);
+		$this->addAttr and HTMLBuilder::parseAdditionalAttributes($node, $this->addAttr);
+		(count($this->style) > 0) and $node->setAttribute('style', HTMLBuilder::parseStyle($this->style));
+		$this->title and $node->setAttribute('title', $this->title);
+
+		foreach ($this->innerHTML as $innerElem)
+		{
+			$node->appendChild($innerElem->toNode($html));
+		}
+
+		$html->appendChild($node);
+		return $node;
+	}
+
+	public function toString()
+	{
+		return HTMLBuilder::beta($this);
+	}
+
 	public function __tostring()
 	{
-		return HTMLBuilder::getElementHTML($this);
+		return HTMLBuilder::beta($this);
 	}
 
 }
