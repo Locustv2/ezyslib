@@ -25,13 +25,19 @@ class HTMLTable extends HTMLElement
 		return $this;
 	}
 
+	public function caption($caption, $align = 'bottom')
+	{
+		$this->innerHTML(HTMLTableCaption::element()->innerHTML("$caption")->addAttr(array('align' => $align)));
+		return $this;
+	}
+
 	public function addHeader()
 	{
 		$headers = func_get_args();
 		$tr = HTMLTableRow::element();
 		foreach ($headers as $header)
 		{
-			$th = HTMLTableHeader::element()->innerTEXT("$header");
+			$th = HTMLTableHeader::element()->innerHTML($header);
 			$tr->innerHTML($th);
 		}
 		$this->innerHTML($tr);
@@ -40,20 +46,20 @@ class HTMLTable extends HTMLElement
 
 	public function addRow()
 	{
-		$headers = func_get_args();
+		$columns = func_get_args();
 		$tr = HTMLTableRow::element();
-		foreach ($headers as $header)
+		foreach ($columns as $column)
 		{
-			if(!is_array($header))
+			if(!is_array($column))
 			{
-				$td = HTMLTableDiv::element()->innerTEXT("$header");
+				$td =  HTMLTableDiv::element()->innerHTML($column);
 				$tr->innerHTML($td);
 			}
 			else
 			{
-				foreach ($header as $value)
+				foreach ($column as $value)
 				{
-					$td = HTMLTableDiv::element()->innerTEXT("$value");
+					$td = HTMLTableDiv::element()->innerHTML($value);
 					$tr->innerHTML($td);
 				}
 			}
@@ -111,6 +117,17 @@ class HTMLTableHeader extends HTMLElement
 class HTMLTableDiv extends HTMLElement
 {
 	const TAG = "td";
+
+	public static function element()
+	{
+		return parent::init();
+	}
+
+}
+
+class HTMLTableCaption extends HTMLElement
+{
+	const TAG = "caption";
 
 	public static function element()
 	{

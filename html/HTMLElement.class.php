@@ -25,7 +25,7 @@ abstract class HTMLElement
 		$this->innerTEXT = null;
 	}
 
-	public static function init()
+	protected static function init()
 	{
 		return new static;
 	}
@@ -104,7 +104,12 @@ abstract class HTMLElement
 			if(is_array($html))
 				$this->innerHTML->addEach($html);
 			else
-				$this->innerHTML->add($html);
+			{
+				if($html instanceof HTMLElement)
+					$this->innerHTML->add($html);
+				else
+					self::innerTEXT($html);
+			}
 		else
 			return $this->innerHTML;
 		return $this;
@@ -113,15 +118,15 @@ abstract class HTMLElement
 	public function innerTEXT($text = null)
 	{
 		if(isset($text))
-			$this->innerTEXT = $text;
+			$this->innerTEXT = "$text";
 		else
 			return $this->innerTEXT;
 		return $this;
 	}
 
-	public function toNode($html)
+	public function toNode(DOMDocument &$dom)
 	{
-		$node = $html->createElement($this::TAG, is_string($this->innerTEXT()) ? $this->innerTEXT() : null);
+		$node = $dom->createElement($this::TAG, is_string($this->innerTEXT()) ? $this->innerTEXT() : null);
 		$this->accessKey and $node->setAttribute('accesskey', $this->accessKey);
 		(count($this->htmlclass) > 0) and $node->setAttribute('class', HTMLBuilder::parseClass($this->htmlclass));
 		$this->hidden and $node->setAttribute('hidden', $this->hidden);
@@ -132,21 +137,22 @@ abstract class HTMLElement
 
 		foreach ($this->innerHTML as $innerElem)
 		{
-			$node->appendChild($innerElem->toNode($html));
+			$node->appendChild($innerElem->toNode($dom));
 		}
 
-		$html->appendChild($node);
+		$dom->appendChild($node);
 		return $node;
 	}
 
+	// For testing purposes (to be removed)
 	public function toString()
 	{
-		return HTMLBuilder::beta($this);
+		return HTMLBuilder::buildHTML($this);
 	}
 
 	public function __tostring()
 	{
-		return HTMLBuilder::beta($this);
+		return HTMLBuilder::buildHTML($this);
 	}
 
 }
