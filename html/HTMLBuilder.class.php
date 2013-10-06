@@ -25,12 +25,12 @@ class HTMLBuilder
 		return $html->saveHTML();
 	}
 
-	public function parseClass(Set $class)
+	public static function parseClass(Set $class)
 	{
 		return implode(" ", $class->toArray());
 	}
 
-	public function parseStyle(Map $styles)
+	public static function parseStyle(Map $styles)
 	{
 		$html = '';
 		foreach ($styles as $key => $value)
@@ -40,7 +40,7 @@ class HTMLBuilder
 		return $html;
 	}
 
-	public function parseAdditionalAttributes(DOMElement &$element, Map $attributes)
+	public static function parseAdditionalAttributes(DOMElement &$element, Map $attributes)
 	{
 		foreach ($attributes as $key => $value)
 		{

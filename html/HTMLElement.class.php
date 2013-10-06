@@ -102,7 +102,12 @@ abstract class HTMLElement
 	{
 		if(isset($html))
 			if(is_array($html))
-				$this->innerHTML->addEach($html);
+			{
+				if($html instanceof HTMLElement)
+					$this->innerHTML->addEach($html);
+				else
+					self::innerTEXT($html);
+			}
 			else
 			{
 				if($html instanceof HTMLElement)

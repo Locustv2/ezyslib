@@ -3,10 +3,11 @@
 class HTMLTable extends HTMLElement
 {
 	const TAG = "table";
+	private $colgroup;
 
 	public static function element()
 	{
-		return parent::init()->border()->width();
+		return parent::init()->border()->width()->columns();
 	}
 
 	public function border($border = 1)
@@ -25,9 +26,26 @@ class HTMLTable extends HTMLElement
 		return $this;
 	}
 
+	public function columns($widths = null)
+	{
+		$this->innerHTML->remove($this->colgroup);
+		$columns = explode(' ', $widths);
+		$this->colgroup = HTMLTableColumnGroup::element();
+		if(isset($widths))
+		{
+			self::width(0);
+			foreach ($columns as $width)
+			{
+				$this->colgroup->addColumn($width);
+			}
+		}
+		self::innerHTML($this->colgroup);
+		return $this;
+	}
+
 	public function caption($caption, $align = 'bottom')
 	{
-		$this->innerHTML(HTMLTableCaption::element()->innerHTML("$caption")->addAttr(array('align' => $align)));
+		self::innerHTML(HTMLTableCaption::element()->innerHTML("$caption")->addAttr(array('align' => $align)));
 		return $this;
 	}
 
@@ -40,7 +58,7 @@ class HTMLTable extends HTMLElement
 			$th = HTMLTableHeader::element()->innerHTML($header);
 			$tr->innerHTML($th);
 		}
-		$this->innerHTML($tr);
+		self::innerHTML($tr);
 		return $this;
 	}
 
@@ -64,7 +82,7 @@ class HTMLTable extends HTMLElement
 				}
 			}
 		}
-		$this->innerHTML($tr);
+		self::innerHTML($tr);
 		return $this;
 	}
 
@@ -79,60 +97,17 @@ class HTMLTable extends HTMLElement
 
 	public function rowSpan($row, $col, $span)
 	{
+		$row++;
 		$this->innerHTML[$row]->innerHTML[$col]->addAttr(array('rowspan' => $span));
 		return $this;
 	}
 
 	public function colSpan($row, $col, $span)
 	{
+		$row++;
 		$this->innerHTML[$row]->innerHTML[$col]->addAttr(array('colspan' => $span));
 		return $this;
 	}	
-
-}
-
-
-class HTMLTableRow extends HTMLElement
-{
-	const TAG = "tr";
-
-	public static function element()
-	{
-		return parent::init();
-	}
-
-}
-
-class HTMLTableHeader extends HTMLElement
-{
-	const TAG = "th";
-
-	public static function element()
-	{
-		return parent::init();
-	}
-
-}
-
-class HTMLTableDiv extends HTMLElement
-{
-	const TAG = "td";
-
-	public static function element()
-	{
-		return parent::init();
-	}
-
-}
-
-class HTMLTableCaption extends HTMLElement
-{
-	const TAG = "caption";
-
-	public static function element()
-	{
-		return parent::init();
-	}
 
 }
 
