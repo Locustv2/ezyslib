@@ -11,7 +11,7 @@ class Set extends CollectionArray
 
 	public function add($elementKey, $elementValue = null)
 	{
-		return self::contains($elementKey)
+		return $this->contains($elementKey)
 			? false
 			: parent::add($elementKey);
 	}

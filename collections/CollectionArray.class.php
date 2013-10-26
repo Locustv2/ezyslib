@@ -11,11 +11,11 @@ abstract class CollectionArray extends ArrayObject implements Collection
 		$this->isIndexed = $isIndexed;
 		if(isset($elements) && is_array($elements))
 		{
-			self::addEach($elements);
+			$this->addEach($elements);
 		}
 		else if($elements instanceof Collection)
 		{
-			self::addAll($elements);
+			$this->addAll($elements);
 		}
 	}
 
@@ -30,7 +30,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	public function addAll(Collection $collection)
 	{
-		return self::addEach($collection->toArray());
+		return $this->addEach($collection->toArray());
 	}
 
 	public function addEach(array $array)
@@ -47,7 +47,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	public function clear()
 	{
-		foreach (self::toArray() as $key => $element)
+		foreach ($this->toArray() as $key => $element)
 		{
 			unset($this[$key]);
 		}
@@ -55,7 +55,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	public function contains($element)
 	{
-		return @in_array(serialize($element), self::toSerializedArray(), true)
+		return @in_array(serialize($element), $this->toSerializedArray(), true)
 			? true 
 			: false;
 	}
@@ -64,7 +64,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 	{
 		foreach ($collection->toArray() as $element)
 		{
-			if(!self::contains($element))
+			if(!$this->contains($element))
 				return false;
 		}
 		return true;
@@ -72,7 +72,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	protected function containsIndex($index)
 	{
-		return @array_key_exists($index, self::toArray())
+		return @array_key_exists($index, $this->toArray())
 			? true
 			: false;
 	}
@@ -81,7 +81,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 	{
 		$object = get_class($this);
 		return $collection instanceof $object
-			? self::containsAll($collection) and $collection->containsAll($this)
+			? $this->containsAll($collection) and $collection->containsAll($this)
 			: false;
 	}
 
@@ -94,23 +94,23 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	protected function indexOf($element)
 	{
-		return self::contains($element) 
-			? @array_search($element, self::toArray(), true)
+		return $this->contains($element) 
+			? @array_search($element, $this->toArray(), true)
 			: false;
 	}
 
 	public function isEmpty()
 	{
-		return self::size()===0
+		return $this->size()===0
 			? true
 			: false;
 	}
 
 	public function remove($element)
 	{
-		$index = self::indexOf($element);
+		$index = $this->indexOf($element);
 		return isset($index)
-			? self::removeIndex($index)
+			? $this->removeIndex($index)
 			: false;
 	}
 
@@ -119,7 +119,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 		$changed = false;
 		foreach ($collection->toArray() as $element)
 		{
-			if(self::remove($element))
+			if($this->remove($element))
 				$changed = true;
 		}
 		return $changed;
@@ -130,7 +130,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 		$changed = false;
 		foreach ($array as $element)
 		{
-			if(self::remove($element))
+			if($this->remove($element))
 				$changed = true;
 		}
 		return $changed;
@@ -138,9 +138,9 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	protected function removeIndex($index)
 	{
-		if(self::containsIndex($index))
+		if($this->containsIndex($index))
         {
-        	$arr = self::toArray();
+        	$arr = $this->toArray();
         	unset($arr[$index]);
         	$arr = array_merge($arr);
         	$this->exchangeArray($arr);
@@ -152,11 +152,11 @@ abstract class CollectionArray extends ArrayObject implements Collection
 	public function retainAll(Collection $collection)
 	{
 		$changed = false;
-		foreach (self::toArray() as $element)
+		foreach ($this->toArray() as $element)
 		{
 			if(!$collection->contains($element))
 			{
-				self::remove($element);
+				$this->remove($element);
 				$changed = true;
 			}
 		}
@@ -165,7 +165,7 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	protected function set($index, $element)
 	{
-		$value = self::get($index);
+		$value = $this->get($index);
 		return ($this[$index] = $element)
 			? isset($value)
 				? $value
@@ -180,14 +180,14 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	public function toArray()
 	{
-		return self::getArrayCopy();
+		return $this->getArrayCopy();
 	}
 
 	protected function toSerializedArray()
 	{
 		$array = array();
 
-		foreach (self::getArrayCopy() as $value)
+		foreach ($this->getArrayCopy() as $value)
 		{
 			$array[] = serialize($value);
 		}
@@ -197,8 +197,8 @@ abstract class CollectionArray extends ArrayObject implements Collection
 
 	public function __tostring()
 	{
-		$string = @get_class($this) . "[" . self::size() . "] { ";
-		$string .= implode(', ', self::toArray());
+		$string = @get_class($this) . "[" . $this->size() . "] { ";
+		$string .= implode(', ', $this->toArray());
 		$string .= " }";
 		return $string;
 	}

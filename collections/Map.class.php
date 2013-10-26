@@ -39,12 +39,12 @@ class Map extends CollectionArray
 
 	public function __tostring()
     {
-        $string = @get_class($this) . "[" . self::size() . "] { ";
-        foreach (self::toArray() as $elementKey => $elementValue)
+        $string = @get_class($this) . "[" . $this->size() . "] { ";
+        foreach ($this->toArray() as $elementKey => $elementValue)
         {
-        	$index = @array_search($elementKey, @array_keys(self::toArray()));
+        	$index = @array_search($elementKey, @array_keys($this->toArray()));
             $string .= "$elementKey => $elementValue";
-            if($index < self::size()-1)
+            if($index < $this->size()-1)
                 $string .= ', ';
         }
         $string .= " }";

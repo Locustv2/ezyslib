@@ -23,8 +23,8 @@ class Queue extends CollectionArray
 
 	public function pop()
 	{
-		return self::peek()
-			? !parent::remove($peek = self::peek())
+		return $this->peek()
+			? !parent::remove($peek = $this->peek())
 				?: $peek
 			: null;
 	}
@@ -32,13 +32,13 @@ class Queue extends CollectionArray
 	public function pos($element)
 	{
 		return parent::contains($element) 
-			? @array_search($element, @array_values(self::toArray()), true) + 1
+			? @array_search($element, @array_values($this->toArray()), true) + 1
 			: false;
 	}
 
 	public function push($element)
 	{
-		return self::add($element);
+		return $this->add($element);
 	}
 }
 
