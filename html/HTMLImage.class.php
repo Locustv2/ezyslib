@@ -23,7 +23,7 @@ class HTMLImage extends HTMLElement
 
 	public function width($width)
 	{
-		self::addAttr(array(
+		$this->addAttr(array(
 			'width' => $width
 		));
 		return $this;
@@ -31,7 +31,7 @@ class HTMLImage extends HTMLElement
 
 	public function height($height)
 	{
-		self::addAttr(array(
+		$this->addAttr(array(
 			'height' => $height
 		));
 		return $this;

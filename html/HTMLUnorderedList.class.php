@@ -12,7 +12,7 @@ class HTMLUnorderedList extends HTMLElement
 	public function addItem($item)
 	{
 		$item = HTMLListItem::element()->innerHTML($item);
-		self::innerHTML($item);
+		$this->innerHTML($item);
 		return $this;
 	}
 
@@ -20,14 +20,14 @@ class HTMLUnorderedList extends HTMLElement
 	{
 		foreach ($dataset as $item)
 		{
-			self::addItem($item);
+			$this->addItem($item);
 		}
 		return $this;
 	}
 
 	public function type($type)
 	{
-		self::addAttr(array(
+		$this->addAttr(array(
 			'type' => $type
 		));
 		return $this;

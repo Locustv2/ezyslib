@@ -12,7 +12,7 @@ class HTMLTableColumnGroup extends HTMLElement
 	public function addColumn($width)
 	{
 		$column = HTMLTableColumn::element()->width($width);
-		self::innerHTML($column);
+		$this->innerHTML($column);
 		return $this;
 	}
 

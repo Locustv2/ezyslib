@@ -11,7 +11,7 @@ class HTMLTableColumn extends HTMLElement
 
 	public function width($width = '100%')
 	{
-		self::addAttr(array(
+		$this->addAttr(array(
 			'width' => $width
 		));
 		return $this;

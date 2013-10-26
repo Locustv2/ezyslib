@@ -12,7 +12,7 @@ class HTMLTable extends HTMLElement
 
 	public function border($border = 1)
 	{
-		self::addAttr(array(
+		$this->addAttr(array(
 			'border' => $border
 		));
 		return $this;
@@ -20,7 +20,7 @@ class HTMLTable extends HTMLElement
 
 	public function width($width = '100%')
 	{
-		self::addAttr(array(
+		$this->addAttr(array(
 			'width' => $width
 		));
 		return $this;
@@ -33,19 +33,19 @@ class HTMLTable extends HTMLElement
 		$this->colgroup = HTMLTableColumnGroup::element();
 		if(isset($widths))
 		{
-			self::width(0);
+			$this->width(0);
 			foreach ($columns as $width)
 			{
 				$this->colgroup->addColumn($width);
 			}
 		}
-		self::innerHTML($this->colgroup);
+		$this->innerHTML($this->colgroup);
 		return $this;
 	}
 
 	public function caption($caption, $align = 'bottom')
 	{
-		self::innerHTML(HTMLTableCaption::element()->innerHTML("$caption")->addAttr(array('align' => $align)));
+		$this->innerHTML(HTMLTableCaption::element()->innerHTML("$caption")->addAttr(array('align' => $align)));
 		return $this;
 	}
 
@@ -58,7 +58,7 @@ class HTMLTable extends HTMLElement
 			$th = HTMLTableHeader::element()->innerHTML($header);
 			$tr->innerHTML($th);
 		}
-		self::innerHTML($tr);
+		$this->innerHTML($tr);
 		return $this;
 	}
 
@@ -82,7 +82,7 @@ class HTMLTable extends HTMLElement
 				}
 			}
 		}
-		self::innerHTML($tr);
+		$this->innerHTML($tr);
 		return $this;
 	}
 
@@ -90,7 +90,7 @@ class HTMLTable extends HTMLElement
 	{
 		foreach ($dataset as $row)
 		{
-			self::addRow($row);
+			$this->addRow($row);
 		}
 		return $this;
 	}
