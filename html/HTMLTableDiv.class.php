@@ -10,5 +10,3 @@ class HTMLTableDiv extends HTMLElement
 	}
 
 }
-
-?>

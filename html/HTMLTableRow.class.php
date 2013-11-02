@@ -10,5 +10,3 @@ class HTMLTableRow extends HTMLElement
 	}
 
 }
-
-?>

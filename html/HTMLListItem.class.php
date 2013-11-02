@@ -9,5 +9,3 @@ class HTMLListItem extends HTMLElement
 		return parent::init();
 	}
 }
-
-?>

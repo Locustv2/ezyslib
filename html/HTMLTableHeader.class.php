@@ -10,5 +10,3 @@ class HTMLTableHeader extends HTMLElement
 	}
 
 }
-
-?>

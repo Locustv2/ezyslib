@@ -41,5 +41,3 @@ class Queue extends CollectionArray
 		return $this->add($element);
 	}
 }
-
-?>

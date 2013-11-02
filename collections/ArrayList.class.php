@@ -36,4 +36,3 @@ class ArrayList extends CollectionArray
 		return parent::set($index, $element);
 	}
 }
-?>

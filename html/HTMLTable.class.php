@@ -110,5 +110,3 @@ class HTMLTable extends HTMLElement
 	}	
 
 }
-
-?>

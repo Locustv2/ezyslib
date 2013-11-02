@@ -21,5 +21,3 @@ class HTMLAnchor extends HTMLElement
 		return $this;
 	}
 }
-
-?>

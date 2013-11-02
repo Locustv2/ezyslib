@@ -39,8 +39,8 @@ abstract class CollectionArray extends ArrayObject implements Collection
 		foreach ($array as $key => $element)
 		{
 			$changed = ($this->isIndexed)
-				? static::add($key, $element)
-				: static::add($element);
+				? $this->add($key, $element)
+				: $this->add($element);
 		}
 		return $changed;
 	}
@@ -204,5 +204,3 @@ abstract class CollectionArray extends ArrayObject implements Collection
 	}
 
 }
-
-?>

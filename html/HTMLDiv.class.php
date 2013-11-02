@@ -10,5 +10,3 @@ class HTMLDiv extends HTMLElement
 	}
 
 }
-
-?>

@@ -16,4 +16,3 @@ class Set extends CollectionArray
 			: parent::add($elementKey);
 	}
 }
-?>

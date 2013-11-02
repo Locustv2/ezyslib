@@ -41,5 +41,3 @@ class Stack extends CollectionArray
 		return $this->add($element);
 	}
 }
-
-?>

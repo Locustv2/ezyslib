@@ -37,5 +37,3 @@ class HTMLImage extends HTMLElement
 		return $this;
 	}
 }
-
-?>

@@ -1,25 +1,13 @@
 <?php
 
-abstract class HTMLElement
+abstract class HTMLElement extends HTMLGlobalAttributes
 {
-	private $accessKey;
-	private $htmlclass;
-	private $hidden;
-	private $id;
-	private $style;
-	private $title;
 	private $addAttr;
 	private $innerHTML;
 	private $innerTEXT;
 
 	private function __construct()
 	{
-		$this->accessKey = null;
-		$this->htmlclass = new Set();
-		$this->hidden = false;
-		$this->id = null;
-		$this->style = new Map();
-		$this->title = null;
 		$this->addAttr = new Map();
 		$this->innerHTML = new ArrayList();
 		$this->innerTEXT = null;
@@ -33,60 +21,6 @@ abstract class HTMLElement
 	public function __get($attr)
 	{
 		return $this->$attr;
-	}
-
-	public function accessKey($key = null)
-	{
-		if(isset($key) and ($key !="") and is_string($key)) 
-			$this->accessKey = $key[0];
-		else
-			return $this->accessKey;
-		return $this;
-	}
-
-	public function htmlclass($class = null)
-	{
-		if(isset($class))
-			$this->htmlclass->addEach(explode(" ", $class));
-		else
-			return $this->htmlclass;
-		return $this;
-	}
-
-	public function hidden($hidden = null)
-	{
-		if(isset($hidden))
-			$this->hidden = $hidden;
-		else
-			return $this->hidden;
-		return $this;
-	}
-
-	public function id($id = null)
-	{
-		if(isset($id))
-			$this->id = str_replace(' ','',$id);
-		else
-			return $this->id;
-		return $this;
-	}
-
-	public function style(array $styles = null)
-	{
-		if(isset($styles))
-			$this->style->addEach($styles);
-		else
-			return $this->style;
-		return $this;
-	}
-
-	public function title($title = null)
-	{
-		if(isset($title))
-			$this->title = $title;
-		else
-			return $this->title;
-		return $this;
 	}
 
 	public function addAttr(array $attr = null)
@@ -161,5 +95,3 @@ abstract class HTMLElement
 	}
 
 }
-
-?>

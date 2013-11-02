@@ -17,5 +17,3 @@ class HTMLTableColumnGroup extends HTMLElement
 	}
 
 }
-
-?>

@@ -104,5 +104,3 @@ interface Collection
      */
     public function toArray();
 }
-
-?>

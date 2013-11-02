@@ -10,5 +10,3 @@ class HTMLTableCaption extends HTMLElement
 	}
 
 }
-
-?>

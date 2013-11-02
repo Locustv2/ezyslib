@@ -18,5 +18,3 @@ class HTMLTableColumn extends HTMLElement
 	}
 
 }
-
-?>
