@@ -6,8 +6,9 @@ abstract class HTMLElement extends HTMLGlobalAttributes
 	private $innerHTML;
 	private $innerTEXT;
 
-	private function __construct()
+	public function __construct()
 	{
+		parent::__construct();
 		$this->addAttr = new Map();
 		$this->innerHTML = new ArrayList();
 		$this->innerTEXT = null;
@@ -25,16 +26,21 @@ abstract class HTMLElement extends HTMLGlobalAttributes
 
 	public function addAttr(array $attr = null)
 	{
-		if(isset($attr))
+		if(!is_null($attr))
+		{
 			$this->addAttr->addEach($attr);
+		}
 		else
+		{
 			return $this->style;
+		}
 		return $this;
 	}
 
 	public function innerHTML($html = null)
 	{
-		if(isset($html))
+		if(!is_null($html))
+		{
 			if(is_array($html))
 			{
 				if($html instanceof HTMLElement)
@@ -49,17 +55,24 @@ abstract class HTMLElement extends HTMLGlobalAttributes
 				else
 					self::innerTEXT($html);
 			}
+		}
 		else
+		{
 			return $this->innerHTML;
+		}
 		return $this;
 	}
 
 	public function innerTEXT($text = null)
 	{
-		if(isset($text))
+		if(!is_null($text))
+		{
 			$this->innerTEXT = "$text";
+		}
 		else
+		{
 			return $this->innerTEXT;
+		}
 		return $this;
 	}
 

@@ -1,13 +1,23 @@
 <?php
 
-abstract class HTMLGlobalAttributes
+class HTMLGlobalAttributes
 {
-	protected $accessKey = null;
-	protected $htmlclass = null;
-	protected $hidden = false;
-	protected $id = null;
-	protected $style = null;
-	protected $title = null;
+	protected $accessKey;
+	protected $htmlclass;
+	protected $hidden;
+	protected $id;
+	protected $style;
+	protected $title;
+
+	public function __construct()
+	{
+		$this->accessKey = null;
+		$this->htmlclass = new Set();
+		$this->hidden = false;
+		$this->id = null;
+		$this->style = new Map();
+		$this->title = null;
+	}
 
 	public function accessKey($key = null)
 	{
@@ -26,7 +36,6 @@ abstract class HTMLGlobalAttributes
 	{
 		if(!is_null($class))
 		{
-			!is_null($this->htmlclass) ?: $this->htmlclass = new Set();
 			$this->htmlclass->addEach(explode(" ", $class));
 		}
 		else
@@ -66,7 +75,6 @@ abstract class HTMLGlobalAttributes
 	{
 		if(!is_null($styles))
 		{
-			!is_null($this->style) ?: $this->style = new Map();
 			$this->style->addEach($styles);
 		}
 		else
